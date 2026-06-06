@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "appTitle": "My App",
+
+  "settings": "Settings",
+  "fileManager": "File Manager",
+  "lightTheme": "Light Theme",
+  "darkTheme": "Dark Theme",
+  "selectLanguage": "Select Language",
+
+  "english": "English",
+  "urdu": "Urdu",
+  "getInTouch": "Get in touch",
+  "favourite":"Favourite",
+  "home":"Home",
+  "allFiles":"All Files",
+  "excel":"Excel Files",
+  "word":"Word Files",
+  "pdf":"PDF Files",
+  "ppt":"PPT Files",
+  "files":"Files",
+  "allFiles":"All Files",
+  "searchFiles":"Search Files"
+}

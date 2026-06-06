@@ -1,0 +1,24 @@
+{
+  "@@locale": "ur",
+  "appTitle": "میری ایپ",
+
+  "settings": "سیٹنگز",
+  "fileManager": "فائل مینیجر",
+  "lightTheme": "ہلکا تھیم",
+  "darkTheme": "ڈارک تھیم",
+  "selectLanguage": "زبان منتخب کریں",
+
+  "english": "انگریزی",
+  "urdu": "اردو",
+  "getInTouch": "رابطہ کریں",
+  "favourite": "پسندیدہ",
+  "home": "ہوم",
+  "allFiles": "تمام فائلیں",
+  "excel": "ایکسل فائلیں",
+  "word": "ورڈ فائلیں",
+  "pdf": "پی ڈی ایف فائلیں",
+  "ppt": " پاورپوائنٹ فائلیں",
+  "files": "فائلیں",
+  "allFiles": "تمام فائلیں",
+  "searchFiles": "فائلیں تلاش کریں"
+}
