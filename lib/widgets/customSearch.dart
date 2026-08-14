@@ -2,11 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:pdf_reader/filesView/customFiles.dart';
-import 'package:pdf_reader/filesView/favourites.dart';
+import 'package:pdf_reader/widgets/customFiles.dart';
+import 'package:pdf_reader/screens/favourites.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
-
 // it is only using for except pdf files
 // icon is not working for ppt files
 class CustomSearch extends ConsumerStatefulWidget {
@@ -111,8 +110,8 @@ class _CustomSearchState extends ConsumerState<CustomSearch> {
                         child: ListTile(
                           leading: icon,
                           title: Text(file.split('/').last),
-                          onTap: () {
-                            OpenFilex.open(file);
+                          onTap: () async {
+                            await OpenFilex.open(file);
                           },
                           trailing: SizedBox(
                             width: 96,

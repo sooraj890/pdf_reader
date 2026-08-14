@@ -1,15 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:path/path.dart';
-import 'package:pdf_reader/filesView/files/pdf/pdfScreen.dart';
-import 'package:pdf_reader/filesView/home.dart';
-import 'package:pdf_reader/filesView/navigationScreen.dart';
-import 'package:pdf_reader/filesView/setting.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
-import 'package:pdf_reader/p1.dart';
-import 'package:pdf_reader/p2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'formats/pdf/pdfScreen.dart';
 
 // it's icon is not showing for fav items
 

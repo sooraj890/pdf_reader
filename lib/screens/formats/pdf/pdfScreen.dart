@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
-import 'package:pdf_reader/filesView/customFiles.dart';
+import 'package:pdf_reader/widgets/customFiles.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfScreen extends StatefulWidget {

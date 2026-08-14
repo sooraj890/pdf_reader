@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:pdf_reader/filesView/favourites.dart';
+import 'package:pdf_reader/screens/favourites.dart';
 import 'package:share_plus/share_plus.dart';
 
 class FileUtils {

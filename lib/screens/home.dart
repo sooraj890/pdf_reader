@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pdf_reader/filesView/allFiles.dart';
-import 'package:pdf_reader/filesView/favourites.dart';
-import 'package:pdf_reader/filesView/files/excel.dart';
-import 'package:pdf_reader/filesView/files/pdf/pdfList.dart';
-import 'package:pdf_reader/filesView/files/ppt.dart';
-import 'package:pdf_reader/filesView/files/word.dart';
+import 'package:pdf_reader/screens/allFiles.dart';
+import 'package:pdf_reader/screens/favourites.dart';
+import 'package:pdf_reader/screens/formats/excel.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
+import 'package:pdf_reader/screens/formats/ppt.dart';
+import 'formats/pdf/pdfList.dart';
+import 'formats/word.dart';
 // custom search is only using for except pdf
 
 final pdfFiles = StateProvider<List<File>>((ref) => []);

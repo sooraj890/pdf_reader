@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pdf_reader/filesView/favourites.dart';
-import 'package:pdf_reader/filesView/home.dart';
-import 'package:pdf_reader/filesView/setting.dart';
+import 'package:pdf_reader/screens/favourites.dart';
+import 'package:pdf_reader/screens/home.dart';
+import 'package:pdf_reader/screens/setting.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
 import 'package:permission_handler/permission_handler.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pdf_reader/filesView/navigationScreen.dart';
+import 'package:pdf_reader/screens/BottomBar.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

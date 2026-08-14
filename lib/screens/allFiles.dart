@@ -2,10 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:pdf_reader/filesView/files/pdf/pdfScreen.dart';
-import 'package:pdf_reader/filesView/home.dart';
+import 'package:pdf_reader/screens/home.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
+
+import 'formats/pdf/pdfScreen.dart';
 
 class AllFiles extends ConsumerStatefulWidget {
   @override

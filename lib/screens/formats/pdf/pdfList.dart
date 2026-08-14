@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pdf_reader/filesView/customFiles.dart';
-import 'package:pdf_reader/filesView/favourites.dart';
-import 'package:pdf_reader/filesView/files/pdf/pdfScreen.dart';
+import 'package:pdf_reader/screens/formats/pdf/pdfScreen.dart';
+import 'package:pdf_reader/widgets/customFiles.dart';
+import 'package:pdf_reader/screens/favourites.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
 import 'package:share_plus/share_plus.dart';
