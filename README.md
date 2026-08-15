@@ -39,11 +39,13 @@ This is the updated look of my pdf reader app in which i have updated so many th
 <img src="screenshots/homeScreen.jpeg" width="200" style="margin-right: 20px;">
 <img src="screenshots/homeScreenLight.jpeg" width="200" style="margin-right: 20px;">
   </p>
+  <br>
   <p>
 <img src="screenshots/homeScreenUrdu.jpeg" width="200" style="margin-right: 20px;">
 <img src="screenshots/internalShowBar.jpeg" width="200" style="margin-right: 20px;">
 <img src="screenshots/pdfInternal.jpeg" width="200" style="margin-right: 20px;">
     </p>
+    <br>
     <p>
 <img src="screenshots/pdfList.jpeg" width="200" style="margin-right: 20px;">
 <img src="screenshots/settings.jpeg" width="200" style="margin-right: 20px;">
