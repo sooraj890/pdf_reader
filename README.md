@@ -33,11 +33,6 @@ This is the updated look of my pdf reader app in which i have updated so many th
 
 ## Screen shots
 
-![WhatsApp Image 2026-08-14 at 11.56.11 AM.jpeg](screenshots/allFiles.jpeg)
-![WhatsApp Image 2026-08-14 at 11.56.12 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.12%20AM.jpeg)
-![WhatsApp Image 2026-08-14 at 11.56.13 AM (1).jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.13%20AM%20%281%29.jpeg)
-![WhatsApp Image 2026-08-14 at 11.56.13 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.13%20AM.jpeg)
-![WhatsApp Image 2026-08-14 at 12.08.11 PM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2012.08.11%20PM.jpeg)
-![WhatsApp Image 2026-08-14 at 11.56.08 AM (1).jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.08%20AM%20%281%29.jpeg)
-![WhatsApp Image 2026-08-14 at 11.56.08 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.08%20AM.jpeg)
-![WhatsApp Image 2026-08-14 at 11.56.11 AM (1).jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.11%20AM%20%281%29.jpeg)
+## Screenshots
+
+<img src="screenshots/allFiles.jpeg" width="250">
