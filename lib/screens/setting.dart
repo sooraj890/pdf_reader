@@ -1,3 +1,5 @@
+// this contain the settings for the app
+
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,6 @@ import 'formats/pdf/pdfScreen.dart';
 class Setting extends ConsumerStatefulWidget {
   final Function(Locale) onChangeLanguage;
   Setting(this.onChangeLanguage);
-
   @override
   _SettingState createState() => _SettingState();
 }
@@ -20,7 +21,6 @@ class Setting extends ConsumerStatefulWidget {
 class _SettingState extends ConsumerState<Setting> {
   Future<void> openLink(String url) async {
     final Uri uri = Uri.parse(url);
-
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw Exception("Could not launch $url");
     }
@@ -28,7 +28,6 @@ class _SettingState extends ConsumerState<Setting> {
 
   Future<void> openFileManager() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
     if (result != null) {
       String? path = result.files.single.path;
       File file = File(path!);
@@ -40,7 +39,6 @@ class _SettingState extends ConsumerState<Setting> {
       } else {
         OpenFilex.open(file.path);
       }
-
       print(path);
     }
   }
@@ -56,17 +54,23 @@ class _SettingState extends ConsumerState<Setting> {
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 50, right: 20),
             child: InkWell(
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.folder, size: 25),
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!.fileManager,
-                    style: TextStyle(fontSize: 17),
-                  ),
-                ],
+              child: Card(
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.folder,
+                        color: Colors.yellowAccent,
+                        size: 25,
+                      ),
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.fileManager,
+                      style: TextStyle(fontSize: 17),
+                    ),
+                  ],
+                ),
               ),
               onTap: () {
                 openFileManager();
@@ -76,60 +80,63 @@ class _SettingState extends ConsumerState<Setting> {
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
+            child: Card(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: themeMode == ThemeMode.dark
+                        ? Icon(Icons.dark_mode, color: Colors.white)
+                        : Icon(Icons.light_mode, color: Colors.yellow),
+                  ),
+                  Text(
                     themeMode == ThemeMode.dark
-                        ? Icons.dark_mode
-                        : Icons.light_mode,
+                        ? AppLocalizations.of(context)!.darkTheme
+                        : AppLocalizations.of(context)!.lightTheme,
+                    style: TextStyle(fontSize: 17),
                   ),
-                ),
-                Text(
-                  themeMode == ThemeMode.dark
-                      ? AppLocalizations.of(context)!.darkTheme
-                      : AppLocalizations.of(context)!.lightTheme,
-                  style: TextStyle(fontSize: 17),
-                ),
-                Expanded(
-                  child: SwitchListTile(
-                    value: themeMode == ThemeMode.light,
-                    onChanged: (value) async {
-                      ref.read(themeProvider.notifier).state = value
-                          ? ThemeMode.light
-                          : ThemeMode.dark;
-                    },
+                  Expanded(
+                    child: SwitchListTile(
+                      value: themeMode == ThemeMode.light,
+                      onChanged: (value) async {
+                        ref.read(themeProvider.notifier).state = value
+                            ? ThemeMode.light
+                            : ThemeMode.dark;
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.language),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.selectLanguage,
-                  style: TextStyle(fontSize: 17),
-                ),
-              ],
+            child: Card(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.language, color: Colors.blue),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.selectLanguage,
+                    style: TextStyle(fontSize: 17),
+                  ),
+                ],
+              ),
             ),
           ),
+          SizedBox(height: 20),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 40, right: 40),
+              padding: const EdgeInsets.only(left: 80, right: 80),
               child: ListView(
                 children: [
                   ListTile(
                     title: Text(AppLocalizations.of(context)!.english),
                     trailing: currentLang == 'en'
-                        ? const Icon(Icons.check, color: Colors.green)
+                        ? const Icon(Icons.check, color: Colors.blue)
                         : null,
                     onTap: () {
                       widget.onChangeLanguage(const Locale('en'));
@@ -138,7 +145,7 @@ class _SettingState extends ConsumerState<Setting> {
                   ListTile(
                     title: Text(AppLocalizations.of(context)!.urdu),
                     trailing: currentLang == 'ur'
-                        ? const Icon(Icons.check, color: Colors.green)
+                        ? const Icon(Icons.check, color: Colors.blue)
                         : null,
                     onTap: () {
                       widget.onChangeLanguage(const Locale('ur'));
@@ -150,26 +157,26 @@ class _SettingState extends ConsumerState<Setting> {
           ),
           SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.only(bottom: 30, left: 8, right: 8),
-            child: InkWell(
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.connect_without_contact),
-                    ),
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    openLink("https://sooraj-portfolio.web.app");
+                  },
+                  child: Icon(
+                    Icons.connect_without_contact_outlined,
+                    color: Colors.red,
                   ),
-                  Text(
-                    AppLocalizations.of(context)!.getInTouch,
-                    style: TextStyle(fontSize: 17,color: Colors.red,fontWeight: FontWeight.bold),
-                  ),
-                ],
+                ),
               ),
-              onTap: () {
-                openLink("https://myportfolio-42c25.web.app");
-              },
             ),
           ),
         ],

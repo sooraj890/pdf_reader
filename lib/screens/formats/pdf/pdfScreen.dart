@@ -1,3 +1,5 @@
+// pdf opening inner screen
+
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,6 @@ class _PdfScreenState extends State<PdfScreen> {
     // TODO: implement initState
     WidgetsFlutterBinding.ensureInitialized();
     super.initState();
-    // orientation
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
@@ -92,7 +93,18 @@ class _PdfScreenState extends State<PdfScreen> {
     return Scaffold(
       appBar: appBar == true
           ? AppBar(
-              title: Text(fileName),
+              title: InkWell(
+                onTap: () async {
+                  final renamed = await FileUtils.showRenameDialog(
+                    context,
+                    file,
+                  );
+                  if (renamed != null) {
+                    Navigator.pop(context, renamed);
+                  }
+                },
+                child: Text(fileName),
+              ),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -126,10 +138,11 @@ class _PdfScreenState extends State<PdfScreen> {
                       ),
                       IconButton(
                         onPressed: () async {
-                          final result = await FileUtils.showFileOptionsSheet(
-                            context,
-                            file,
-                          );
+                          final result =
+                              await FileUtils.showFileOptionsSheetInner(
+                                context,
+                                file,
+                              );
 
                           if (result != null) {
                             setState(() {

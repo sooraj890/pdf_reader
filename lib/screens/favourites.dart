@@ -1,3 +1,5 @@
+// shows favourite items
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
@@ -5,8 +7,6 @@ import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'formats/pdf/pdfScreen.dart';
-
-// it's icon is not showing for fav items
 
 List<String> fav = [];
 
@@ -19,7 +19,6 @@ class Favourites extends StatefulWidget {
   File? files;
   Icon? icon;
   Favourites({this.files, this.icon});
-
   @override
   State<Favourites> createState() => _FavouritesState();
 }
@@ -35,14 +34,17 @@ class _FavouritesState extends State<Favourites> {
   Future<void> loadAndAdd() async {
     final pref = await SharedPreferences.getInstance();
     fav = pref.getStringList('list') ?? [];
+    fav = fav.where((path) => File(path).existsSync()).toList();
     final file = widget.files;
-    if (file != null) {
+    if (file != null && await file.exists()) {
       if (!fav.contains(file.path)) {
         fav.add(file.path);
-        await pref.setStringList('list', fav);
       }
     }
-    setState(() {});
+    await pref.setStringList('list', fav);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> removeFav(int index) async {
@@ -59,7 +61,7 @@ class _FavouritesState extends State<Favourites> {
         title: Text(AppLocalizations.of(context)!.favourite),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 25,left: 25),
+            padding: const EdgeInsets.only(right: 25, left: 25),
             child: Text(
               "${AppLocalizations.of(context)!.files} : ${fav.length}",
               style: TextStyle(fontSize: 15),
@@ -67,18 +69,18 @@ class _FavouritesState extends State<Favourites> {
           ),
         ],
       ),
-      body: fav.isEmpty?Expanded(child: Center(child: Column(
+      body: fav.isEmpty?Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.search_off),
-          Text("No Files"),
+          Icon(Icons.search_off,color: Colors.blue,size: 30,),
+          SizedBox(height: 10,),
+          Text("No favourites",style: TextStyle(fontWeight: FontWeight.bold),),
         ],
-      ),)):ListView.builder(
+      ),):ListView.builder(
         itemCount: fav.length,
         itemBuilder: (context, index) {
-          //final file = widget.files;
           final file2 = fav[index];
-          final Icon? icon = widget.icon;
           return Card(
             child: ListTile(
               leading: Icon(

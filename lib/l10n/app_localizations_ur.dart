@@ -1,10 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
-
-// ignore_for_file: type=lint
-
-/// The translations for Urdu (`ur`).
 class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
@@ -61,4 +57,12 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get searchFiles => 'فائلیں تلاش کریں';
+
+  String get chooseFiles => 'فائلوں کو منتخب کریں';
+
+  String get folders => 'فولڈرز';
+
+  String get image_to_pdf => 'تصاویر کو PDF میں تبدیل کریں';
+
+  String get documents => 'دستاویزات';
 }

@@ -1,97 +1,69 @@
+
 package com.example.pdf_reader
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import android.provider.MediaStore
+import java.io.File
 
 class MainActivity : FlutterActivity() {
 
-    private val CHANNEL = "app.channel.shared.data"
+    private val CHANNEL = "pdf_reader/file"
 
-    private var sharedFilePath: String? = null
+    private var pendingUri: String? = null
 
-    // =========================
-    // APP START
-    // =========================
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Get PDF when app is opened from WhatsApp
         handleIntent(intent)
     }
 
-    // =========================
-    // APP RESUME / NEW INTENT
-    // =========================
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+
+        // Important when app is already running
         setIntent(intent)
+
         handleIntent(intent)
     }
 
-    // =========================
-    // INTENT HANDLER
-    // =========================
     private fun handleIntent(intent: Intent?) {
-        if (intent == null) return
 
-        if (intent.action == Intent.ACTION_VIEW ||
-            intent.action == Intent.ACTION_SEND
-        ) {
-
-            val uri: Uri? =
-                intent.data ?: intent.clipData?.getItemAt(0)?.uri
-
-            if (uri != null) {
-                sharedFilePath = uri.toString() // 🔥 KEEP URI ONLY
-            }
+        if (intent == null) {
+            return
         }
-    }
-    // =========================
-    // SAFE URI → PATH CONVERTER
-    // =========================
-    private fun resolveFilePath(uri: Uri): String? {
-        return try {
 
-            // Direct file path
-            if (uri.scheme == "file") {
-                return uri.path
-            }
+        if (intent.action != Intent.ACTION_VIEW) {
+            return
+        }
 
-            // Content URI handling
-            val projection = arrayOf(MediaStore.MediaColumns.DATA)
+        val uri: Uri? = intent.data
 
-            val cursor = contentResolver.query(
-                uri,
-                projection,
-                null,
-                null,
-                null
+        if (uri == null) {
+            return
+        }
+
+        pendingUri = uri.toString()
+
+        // If Flutter is already connected, send immediately
+        flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
+
+            MethodChannel(
+                messenger,
+                CHANNEL
+            ).invokeMethod(
+                "openExternalFile",
+                pendingUri
             )
-
-            cursor?.use {
-                val index =
-                    it.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-
-                if (it.moveToFirst()) {
-                    return it.getString(index)
-                }
-            }
-
-            // fallback
-            uri.path
-
-        } catch (e: Exception) {
-            uri.path
         }
     }
 
-    // =========================
-    // FLUTTER COMMUNICATION
-    // =========================
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+    override fun configureFlutterEngine(
+        flutterEngine: FlutterEngine
+    ) {
         super.configureFlutterEngine(flutterEngine)
 
         MethodChannel(
@@ -99,10 +71,133 @@ class MainActivity : FlutterActivity() {
             CHANNEL
         ).setMethodCallHandler { call, result ->
 
-            if (call.method == "getSharedFile") {
-                result.success(sharedFilePath)
-                sharedFilePath = null
+            when (call.method) {
+
+                // Flutter asks Android to copy content:// URI
+                // to a normal local file.
+                "copyUriToCache" -> {
+
+                    val uriString =
+                        call.argument<String>("uri")
+
+                    if (uriString == null) {
+
+                        result.error(
+                            "INVALID_URI",
+                            "URI is null",
+                            null
+                        )
+
+                        return@setMethodCallHandler
+                    }
+
+                    try {
+
+                        val uri = Uri.parse(uriString)
+
+                        val fileName =
+                            getFileName(uri)
+                                ?: "received_${System.currentTimeMillis()}.pdf"
+
+                        val safeFileName =
+                            fileName.replace(
+                                Regex("[^a-zA-Z0-9._-]"),
+                                "_"
+                            )
+
+                        val outputFile =
+                            File(cacheDir, safeFileName)
+
+                        contentResolver
+                            .openInputStream(uri)
+                            .use { input ->
+
+                                if (input == null) {
+
+                                    result.error(
+                                        "OPEN_FAILED",
+                                        "Could not open document",
+                                        null
+                                    )
+
+                                    return@setMethodCallHandler
+                                }
+
+                                outputFile.outputStream()
+                                    .use { output ->
+
+                                        input.copyTo(output)
+                                    }
+                            }
+
+                        result.success(
+                            outputFile.absolutePath
+                        )
+
+                    } catch (e: Exception) {
+
+                        result.error(
+                            "COPY_FAILED",
+                            e.message,
+                            null
+                        )
+                    }
+                }
+
+                else -> {
+                    result.notImplemented()
+                }
             }
         }
+
+        // If app was launched with a PDF before
+        // Flutter was ready, send it now.
+        pendingUri?.let { uri ->
+
+            MethodChannel(
+                flutterEngine.dartExecutor.binaryMessenger,
+                CHANNEL
+            ).invokeMethod(
+                "openExternalFile",
+                uri
+            )
+
+            pendingUri = null
+        }
+    }
+
+    private fun getFileName(uri: Uri): String? {
+
+        var fileName: String? = null
+
+        try {
+
+            contentResolver.query(
+                uri,
+                null,
+                null,
+                null,
+                null
+            )?.use { cursor ->
+
+                val nameIndex =
+                    cursor.getColumnIndex(
+                        android.provider.OpenableColumns.DISPLAY_NAME
+                    )
+
+                if (nameIndex >= 0 && cursor.moveToFirst()) {
+
+                    fileName =
+                        cursor.getString(nameIndex)
+                }
+            }
+
+        } catch (e: Exception) {
+
+            // Ignore and use fallback
+        }
+
+        return fileName
     }
 }
+

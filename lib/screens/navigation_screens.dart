@@ -1,3 +1,5 @@
+// this screen runs before home screen for deciding navigation
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,54 +48,52 @@ class _NavigationScreenState extends ConsumerState<NavigationScreen> {
     final words = ref.watch(wordFiles);
     final excel = ref.watch(excelFiles);
     final ppt = ref.watch(pptFiles);
-    final totalDoc = pdf.length + words.length + excel.length + ppt.length;
+    //final totalDoc = pdf.length + words.length + excel.length + ppt.length;
     return Scaffold(
       body: screens[currentIndex],
-      bottomNavigationBar: totalDoc == 0
-          ? Text("")
-          : NavigationBar(
-              selectedIndex: currentIndex,
-              onDestinationSelected: (index) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
-              destinations: [
-                NavigationDestination(
-                  icon: Icon(
-                    Icons.home,
-                    color: currentIndex == 0
-                        ? Colors.blue
-                        : themeMode == ThemeMode.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                  label: AppLocalizations.of(context)!.home,
-                ),
-                NavigationDestination(
-                  icon: Icon(
-                    Icons.star,
-                    color: currentIndex == 1
-                        ? Colors.blue
-                        : themeMode == ThemeMode.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                  label: AppLocalizations.of(context)!.favourite,
-                ),
-                NavigationDestination(
-                  icon: Icon(
-                    Icons.settings,
-                    color: currentIndex == 2
-                        ? Colors.blue
-                        : themeMode == ThemeMode.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                  label: AppLocalizations.of(context)!.settings,
-                ),
-              ],
+      bottomNavigationBar: isScanning?Text(""):NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        destinations: [
+          NavigationDestination(
+            icon: Icon(
+              Icons.home,
+              color: currentIndex == 0
+                  ? Colors.blue
+                  : themeMode == ThemeMode.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
+            label: AppLocalizations.of(context)!.home,
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.star,
+              color: currentIndex == 1
+                  ? Colors.blue
+                  : themeMode == ThemeMode.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            label: AppLocalizations.of(context)!.favourite,
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.settings,
+              color: currentIndex == 2
+                  ? Colors.blue
+                  : themeMode == ThemeMode.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            label: AppLocalizations.of(context)!.settings,
+          ),
+        ],
+      ),
     );
   }
 }

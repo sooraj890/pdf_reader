@@ -1,16 +1,43 @@
 # pdf_reader
 
-A new Flutter project.
+This is the updated look of my pdf reader app in which i have updated so many things. 
 
-## Getting Started
+## Features
+- image to pdf conversion, 
+- creating folders and directories 
+- put files into directories, 
 
-This project is a starting point for a Flutter application.
+- multiple files system as 
+- share,
+- rename,
+- fav/un-fav items,
+- delete or remove,
+- open or close file
 
-A few resources to get you started if this is your first Flutter project:
+- added new splash screen, 
+- whatsapp file opening support and much more.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Technologies
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter for UI
+- Dart for logic,
+- Android native for URI and storage syncing,
+- Riverpod for state management
+
+
+## Tools
+
+- Android Studio 
+- Real device / Emulator,
+- pub.dev packages
+
+## Screen shots
+
+![WhatsApp Image 2026-08-14 at 11.56.11 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.11%20AM.jpeg)
+![WhatsApp Image 2026-08-14 at 11.56.12 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.12%20AM.jpeg)
+![WhatsApp Image 2026-08-14 at 11.56.13 AM (1).jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.13%20AM%20%281%29.jpeg)
+![WhatsApp Image 2026-08-14 at 11.56.13 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.13%20AM.jpeg)
+![WhatsApp Image 2026-08-14 at 12.08.11 PM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2012.08.11%20PM.jpeg)
+![WhatsApp Image 2026-08-14 at 11.56.08 AM (1).jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.08%20AM%20%281%29.jpeg)
+![WhatsApp Image 2026-08-14 at 11.56.08 AM.jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.08%20AM.jpeg)
+![WhatsApp Image 2026-08-14 at 11.56.11 AM (1).jpeg](../../OneDrive/Desktop/DF/Flutter/projects/pdf_reader/WhatsApp%20Image%202026-08-14%20at%2011.56.11%20AM%20%281%29.jpeg)

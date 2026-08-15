@@ -1,4 +1,7 @@
+// pdf outer screen that have a list of pdf files
+
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf_reader/screens/formats/pdf/pdfScreen.dart';
@@ -8,11 +11,12 @@ import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../home.dart';
+
 class PdfItemsState extends ConsumerStatefulWidget {
   List<File> pdfFiles2;
   var count;
   PdfItemsState({super.key, required this.pdfFiles2, required this.count});
-
   @override
   ConsumerState<PdfItemsState> createState() => _PdfItemsStateState();
 }
@@ -20,22 +24,49 @@ class PdfItemsState extends ConsumerStatefulWidget {
 class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
   bool isSelectionMode = false;
   Set<String> selectedFiles = {};
-
-  late List<String> files = widget.pdfFiles2.map((file) => file.path).toList();
+  late List<String> files;
   List<String> filteredItems = [];
-
   int? selectedIndex;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    filteredItems = files;
+    files = widget.pdfFiles2.map((file) => file.path).toList();
+    filteredItems = List.from(files);
+  }
+
+  Future<void> loadFiles() async {
+    final List<File> pdf = [];
+    Future<void> scanDir(Directory dir) async {
+      try {
+        final items = await dir.list().toList();
+        for (final item in items) {
+          if (item is File) {
+            final path = item.path.toLowerCase();
+            if (path.endsWith('.pdf')) {
+              pdf.add(item);
+            }
+          } else if (item is Directory) {
+            await scanDir(item);
+          }
+        }
+      } catch (_) {}
+    }
+
+    await scanDir(Directory('/storage/emulated/0'));
+    if (!mounted) return;
+    setState(() {
+      files = pdf.map((file) => file.path).toList();
+      filteredItems = List.from(files);
+      selectedFiles.removeWhere((path) => !files.contains(path));
+    });
+    ref.read(pdfFiles.notifier).state = pdf;
   }
 
   void filterSearch(String query) {
-    List<String> results = [];
+    List<String> results;
     if (query.isEmpty) {
-      results = files;
+      results = List.from(files);
     } else {
       results = files.where((item) {
         final fileName = item.split('/').last;
@@ -47,23 +78,14 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
     });
   }
 
-  static Future<void> shareFile(File file) async {
-    try {
-      await Share.shareXFiles([XFile(file.path)], text: "Sharing file");
-    } catch (e) {
-      debugPrint("Share error: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    int counting = widget.count;
     final themeMode = ref.watch(themeProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.pdf),
         actions: [
+          // Selection button
           if (!isSelectionMode)
             IconButton(
               icon: const Icon(Icons.check_circle),
@@ -74,17 +96,17 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
               },
             ),
 
+          // Selection mode
           if (isSelectionMode) ...[
+            // SHARE SELECTED
             IconButton(
               icon: const Icon(Icons.share),
               onPressed: () async {
                 if (selectedFiles.isEmpty) return;
-
                 await Share.shareXFiles(
                   selectedFiles.map((path) => XFile(path)).toList(),
                   text: "Sharing files",
                 );
-
                 setState(() {
                   selectedFiles.clear();
                   isSelectionMode = false;
@@ -92,6 +114,33 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
               },
             ),
 
+            // DELETE SELECTED
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                if (selectedFiles.isEmpty) return;
+                for (final path in selectedFiles) {
+                  final file = File(path);
+                  if (await file.exists()) {
+                    try {
+                      await file.delete();
+                    } catch (e) {
+                      debugPrint("Delete error: $e");
+                    }
+                  }
+                }
+
+                // Reload files from storage
+                await loadFiles();
+
+                if (!mounted) return;
+
+                setState(() {
+                  selectedFiles.clear();
+                  isSelectionMode = false;
+                });
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
@@ -108,41 +157,49 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
             child: Center(
               child: Text(
                 isSelectionMode
-                    ? "${selectedFiles.length} Selected"
-                    : "${AppLocalizations.of(context)!.files} : $counting",
+                    ? "${selectedFiles.length}"
+                    : "${AppLocalizations.of(context)!.files} : ${files.length}",
               ),
             ),
           ),
         ],
       ),
+
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(
-              onChanged: filterSearch, // method
+              onChanged: filterSearch,
+
               style: TextStyle(
                 color: themeMode == ThemeMode.dark
                     ? Colors.white
                     : Colors.black,
               ),
+
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)!.searchFiles,
+
                 hintStyle: TextStyle(
                   color: themeMode == ThemeMode.dark
                       ? Colors.white
                       : Colors.black,
                 ),
+
                 prefixIcon: Icon(
                   Icons.search,
                   color: themeMode == ThemeMode.dark
                       ? Colors.white
                       : Colors.black,
                 ),
+
                 filled: true,
+
                 fillColor: themeMode == ThemeMode.dark
                     ? Colors.grey.shade900
                     : Colors.black12,
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
@@ -153,48 +210,63 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
           filteredItems.isEmpty
               ? Expanded(
                   child: Column(
-                    children: [Text("No Files"), Icon(Icons.search_off)],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [Text("No Files"), Icon(Icons.search_off)],
                   ),
                 )
               : Expanded(
                   child: ListView.builder(
                     itemCount: filteredItems.length,
+
                     itemBuilder: (context, index) {
-                      var file = widget.pdfFiles2[index];
-                      final file2 = filteredItems[index];
-                      Icon icon = Icon(Icons.picture_as_pdf, color: Colors.red);
+                      final filePath = filteredItems[index];
+
+                      final File file = File(filePath);
+
+                      final Icon icon = const Icon(
+                        Icons.picture_as_pdf,
+                        color: Colors.red,
+                      );
 
                       return Card(
                         child: ListTile(
                           leading: isSelectionMode
                               ? Checkbox(
-                                  value: selectedFiles.contains(file2),
+                                  value: selectedFiles.contains(filePath),
+
                                   onChanged: (value) {
                                     setState(() {
                                       if (value == true) {
-                                        selectedFiles.add(file2);
+                                        selectedFiles.add(filePath);
                                       } else {
-                                        selectedFiles.remove(file2);
+                                        selectedFiles.remove(filePath);
                                       }
                                     });
                                   },
                                 )
-                              : Icon(Icons.picture_as_pdf, color: Colors.red),
-                          title: Text(file2.split('/').last),
-                          onTap: () {
+                              : icon,
+                          title: Text(filePath.split('/').last),
+                          onTap: () async {
                             if (isSelectionMode) {
                               setState(() {
-                                if (selectedFiles.contains(file2)) {
-                                  selectedFiles.remove(file2);
+                                if (selectedFiles.contains(filePath)) {
+                                  selectedFiles.remove(filePath);
                                 } else {
-                                  selectedFiles.add(file2);
+                                  selectedFiles.add(filePath);
                                 }
                               });
-                            } else {
+                            } else if (await file.exists()) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PdfScreen(file: file),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("File doesn't exist"),
                                 ),
                               );
                             }
@@ -203,11 +275,12 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
                               ? null
                               : SizedBox(
                                   width: 96,
+
                                   child: Row(
                                     children: [
                                       IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
+                                        onPressed: () async {
+                                          await Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Favourites(
@@ -216,11 +289,13 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
                                               ),
                                             ),
                                           );
-                                          setState(() {});
+                                          await loadFiles();
                                         },
+
                                         icon: Icon(
                                           Icons.star,
-                                          color: fav.contains(file2)
+
+                                          color: fav.contains(filePath)
                                               ? Colors.yellow
                                               : themeMode == ThemeMode.dark
                                               ? Colors.white
@@ -229,19 +304,18 @@ class _PdfItemsStateState extends ConsumerState<PdfItemsState> {
                                       ),
                                       IconButton(
                                         onPressed: () async {
-                                          final result =
-                                              await FileUtils.showFileOptionsSheet(
-                                                context,
-                                                file,
-                                              );
+                                          await FileUtils.showFileOptionsSheet(
+                                            context,
+                                            file,
 
-                                          if (result != null) {
-                                            setState(() {
-                                              file = result;
-                                            });
-                                          }
+                                            // THIS IS THE IMPORTANT PART
+                                            onFileChanged: () async {
+                                              await loadFiles();
+                                            },
+                                          );
                                         },
-                                        icon: Icon(Icons.more_vert),
+
+                                        icon: const Icon(Icons.more_vert),
                                       ),
                                     ],
                                   ),

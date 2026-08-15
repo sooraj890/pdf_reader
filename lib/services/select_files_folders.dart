@@ -1,14 +1,14 @@
+// selects files for moving to different folders this screen have the mostly same logic from
+// all files
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf_reader/screens/Folders_Screen.dart';
 import 'package:pdf_reader/screens/home.dart';
 import 'package:pdf_reader/l10n/app_localizations.dart';
 import 'package:pdf_reader/main.dart';
-
 import '../screens/formats/pdf/pdfScreen.dart';
 
 class MoveFiles extends ConsumerStatefulWidget {
@@ -20,17 +20,11 @@ class MoveFiles extends ConsumerStatefulWidget {
 
 class _MoveFilesState extends ConsumerState<MoveFiles> {
   List<File> filteredFiles = [];
-  List<File> selectedItems=[];
-  bool isSelected=false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  List<File> selectedItems = [];
+  bool isSelected = false;
 
   void filterSearch(String query, List<File> allFiles) {
     List<File> results;
-
     if (query.isEmpty) {
       results = allFiles;
     } else {
@@ -39,22 +33,16 @@ class _MoveFilesState extends ConsumerState<MoveFiles> {
         return fileName.toLowerCase().contains(query.toLowerCase());
       }).toList();
     }
-
     setState(() {
       filteredFiles = results;
     });
   }
 
-
-
   Future<void> saveSelectedFiles(List<File> selectedFiles) async {
     for (final file in selectedFiles) {
       final fileName = path.basename(file.path);
-
-      if(!selectedFiles.contains(fileName)){
-        await file.copy(
-          path.join(widget.folderPath.path, fileName),
-        );
+      if (!selectedFiles.contains(fileName)) {
+        await file.copy(path.join(widget.folderPath.path, fileName));
       }
     }
   }
@@ -73,17 +61,20 @@ class _MoveFilesState extends ConsumerState<MoveFiles> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.allFiles),
+        title: Text(AppLocalizations.of(context)!.chooseFiles),
         actions: [
-          IconButton(onPressed: () async {
-            await saveSelectedFiles(selectedItems);
-            Navigator.pop(context,selectedItems);
-          }, icon: Icon(Icons.drive_file_move)),
+          IconButton(
+            onPressed: () async {
+              await saveSelectedFiles(selectedItems);
+              Navigator.pop(context, selectedItems);
+            },
+            icon: Icon(Icons.drive_file_move, color: themeMode==ThemeMode.dark?Colors.yellowAccent:Colors.yellow.shade700),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 20),
             child: Text(
               "${AppLocalizations.of(context)!.files} : ${allFiles.length}",
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              style: TextStyle(fontSize: 15,),
             ),
           ),
         ],
@@ -129,20 +120,20 @@ class _MoveFilesState extends ConsumerState<MoveFiles> {
               itemCount: filteredFiles.length,
               itemBuilder: (context, index) {
                 final file = filteredFiles[index];
-
                 return ListTile(
                   title: Text(file.path.split('/').last),
-
-                  leading: Checkbox(value: selectedItems.contains(file), onChanged: (value){
-                    setState(() {
-                      if(value==true){
-                        selectedItems.add(file);
-                      }else{
-                        selectedItems.remove(file);
-                      }
-                    });
-                  }),
-
+                  leading: Checkbox(
+                    value: selectedItems.contains(file),
+                    onChanged: (value) {
+                      setState(() {
+                        if (value == true) {
+                          selectedItems.add(file);
+                        } else {
+                          selectedItems.remove(file);
+                        }
+                      });
+                    },
+                  ),
                   onTap: () {
                     if (file.path.endsWith('.pdf')) {
                       Navigator.push(
